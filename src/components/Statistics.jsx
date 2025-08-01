@@ -6,124 +6,221 @@ export default function Statistics({ repoURL, setError })
     const [repoData, setRepoData] = useState({});
     const [loading, setLoading] = useState(true);
 
-    useEffect(()=>{
-        const fetchRepoData = async () =>{
-        
-            try{
+    useEffect(() => {
+        const fetchRepoData = async () => {
+            try {
                 setLoading(true);
-            const [owner, repo] = new URL(repoURL).pathname.slice(1).split("/")
-            const Data = await RepoData(owner, repo);
-            const user = await userData(owner);
-            const pulls = await PullRs(owner, repo);
-            
-            const user_name = Data.full_name.split("/")[0];
-            const mergePR = pulls.filter((m)=> m.merged_at).length;
-            const openPR = pulls.filter((o)=> o.state == "open").length;
-            const closePR = pulls.filter((c)=> c.state == "closed").length;
+                const [owner, repo] = new URL(repoURL).pathname.slice(1).split("/")
+                const Data = await RepoData(owner, repo);
+                const user = await userData(owner);
+                const pulls = await PullRs(owner, repo);
+                
+                const user_name = Data.full_name.split("/")[0];
+                const mergePR = pulls.filter((m) => m.merged_at).length;
+                const openPR = pulls.filter((o) => o.state == "open").length;
+                const closePR = pulls.filter((c) => c.state == "closed").length;
 
-            setRepoData({
-                repo : Data,
-                user : user_name,
-                user_profile : user.avatar_url,
-                PR : pulls.length,
-                mergePR,
-                openPR,
-                closePR
-            });
+                setRepoData({
+                    repo: Data,
+                    user: user_name,
+                    user_profile: user.avatar_url,
+                    PR: pulls.length,
+                    mergePR,
+                    openPR,
+                    closePR
+                });
 
-            setError("");
-            setLoading(false);
-        }catch(err) {
-            const errMsg = " ⚠️ Invalid or Not Found Repository URL";
-            setError(errMsg);
-            console.err(err)
-            setLoading(false);
-        }
-
+                setError("");
+                setLoading(false);
+            } catch(err) {
+                const errMsg = " ⚠️ Invalid or Not Found Repository URL";
+                setError(errMsg);
+                console.error(err)
+                setLoading(false);
+            }
         }
         fetchRepoData();
-    },[repoURL]);
+    }, [repoURL]);
 
-     if (loading) return <p className="text-gray-500 text-sm">Loading repository data...</p>;
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center py-12">
+                <div className="flex items-center space-x-3">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
+                    <p className="text-light-text-secondary dark:text-dark-text-secondary">Loading repository data...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
-           <main className="border border-[#1f2937] rounded-lg  h-auto w-full p-8 m-8 flex flex-col gap-10">
-            <div id="heading" className="flex justify-between">
-               <div id="left-side" className="flex gap-3 items-center">
-                 <img src="Assests/contribution.svg" alt="Contribution" />
-                <h1 className="text-lg font-bold">Contributors</h1>
-               </div>
-               <div id="right-side" className="">
-                    <h1 className="p-2 rounded-lg bg-[#272e36]">Total contributors: </h1>
-               </div>
-            </div> 
-
-            <div id="repo-result" className="">
-                 <main className="bg-[#272e36] w-fit h-auto flex p-10 gap-10 rounded-lg">
-            <div id="profile-pic" className="w-20 h-20">
-                <img src={repoData.user_profile} alt="Owner Profile Pic" className="w-full h-full rounded-full object-cover"/>
-            </div>
-            <div id="all-stats" className="flex flex-col gap-5">
-                <div id="heading" className="flex gap-6">
-                    <h3 class="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
-                        {repoData.user}
-                    </h3>
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-3 h-3 mr-1"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>Contributor</span>
+        <div className="w-full space-y-6">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center space-x-3">
+                    <img src="Assests/contribution.svg" alt="Contributors" className="w-6 h-6" />
+                    <h2 className="text-lg lg:text-xl font-display font-bold text-light-text dark:text-dark-text">
+                        Contributors
+                    </h2>
                 </div>
+                <div className="inline-flex items-center px-3 py-2 bg-light-surface dark:bg-dark-bg rounded-lg">
+                    <span className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                        Total contributors: 1
+                    </span>
+                </div>
+            </div>
 
-                <div id="stats">
-                    <div className="grid grid-cols-2 grid-rows-2 gap-4">
-                        <div id="pull-req" className="flex items-center gap-2">
-                           <svg xmlns="http://www.w3.org/2000/svg"
-                            width="24" height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#2563eb"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="w-4 h-4">
-                            <circle cx="18" cy="18" r="3"></circle>
-                            <circle cx="6" cy="6" r="3"></circle>
-                            <path d="M13 6h3a2 2 0 0 1 2 2v7"></path>
-                            <line x1="6" x2="6" y1="9" y2="21"></line>
-                            </svg>
-                            <span>{repoData.PR} PRs</span>
-                        </div>
-                        <div id="merge" className="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                 width="24" height="24"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="#16a34a"
-                                 stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round"
-                                 class="w-4 h-4 text-green-600">
-                              <circle cx="18" cy="18" r="3"></circle>
-                              <circle cx="6" cy="6" r="3"></circle>
-                              <path d="M6 21V9a9 9 0 0 0 9 9"></path>
-                            </svg>
-                            
-                            <span>{repoData.mergePR} merged</span>
-                        </div>
-                        <div id="open" className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-pull-request w-4 h-4 text-yellow-600"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><path d="M13 6h3a2 2 0 0 1 2 2v7"></path><line x1="6" x2="6" y1="9" y2="21"></line></svg>
-                            <span>
-                                {repoData.openPR} Open
+            {/* Contributor Card */}
+            <div className="bg-light-surface dark:bg-dark-bg border border-light-border dark:border-dark-border rounded-xl p-6 lg:p-8">
+                <div className="flex flex-col sm:flex-row gap-6">
+                    {/* Profile Picture */}
+                    <div className="flex-shrink-0 self-center sm:self-start">
+                        <img 
+                            src={repoData.user_profile} 
+                            alt={`${repoData.user} profile`} 
+                            className="w-16 h-16 lg:w-20 lg:h-20 rounded-full object-cover ring-2 ring-light-border dark:ring-dark-border"
+                        />
+                    </div>
+
+                    {/* User Info and Stats */}
+                    <div className="flex-1 space-y-4">
+                        {/* User Header */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                            <h3 className="text-lg lg:text-xl font-display font-semibold text-light-text dark:text-dark-text">
+                                {repoData.user}
+                            </h3>
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300 border border-primary-200 dark:border-primary-800 w-fit">
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    width="24" 
+                                    height="24" 
+                                    viewBox="0 0 24 24" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    strokeWidth="2" 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round" 
+                                    className="w-3 h-3 mr-1.5"
+                                >
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                                Contributor
                             </span>
                         </div>
-                        <div id="closed" className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-pull-request-closed w-4 h-4 text-red-600"><circle cx="6" cy="6" r="3"></circle><path d="M6 9v12"></path><path d="m21 3-6 6"></path><path d="m21 9-6-6"></path><path d="M18 11.5V15"></path><circle cx="18" cy="18" r="3"></circle></svg>
-                            <span>
-                                {repoData.closePR} Close
-                            </span>
+
+                        {/* Statistics Grid */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                            {/* Total PRs */}
+                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-dark-surface rounded-lg border border-light-border dark:border-dark-border">
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24" 
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#2563eb"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="w-4 h-4 flex-shrink-0"
+                                >
+                                    <circle cx="18" cy="18" r="3"></circle>
+                                    <circle cx="6" cy="6" r="3"></circle>
+                                    <path d="M13 6h3a2 2 0 0 1 2 2v7"></path>
+                                    <line x1="6" x2="6" y1="9" y2="21"></line>
+                                </svg>
+                                <div className="min-w-0">
+                                    <p className="text-sm font-medium text-light-text dark:text-dark-text truncate">
+                                        {repoData.PR} PRs
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Merged PRs */}
+                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-dark-surface rounded-lg border border-light-border dark:border-dark-border">
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24" 
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#16a34a"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="w-4 h-4 flex-shrink-0"
+                                >
+                                    <circle cx="18" cy="18" r="3"></circle>
+                                    <circle cx="6" cy="6" r="3"></circle>
+                                    <path d="M6 21V9a9 9 0 0 0 9 9"></path>
+                                </svg>
+                                <div className="min-w-0">
+                                    <p className="text-sm font-medium text-light-text dark:text-dark-text truncate">
+                                        {repoData.mergePR} merged
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Open PRs */}
+                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-dark-surface rounded-lg border border-light-border dark:border-dark-border">
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    width="24" 
+                                    height="24" 
+                                    viewBox="0 0 24 24" 
+                                    fill="none" 
+                                    stroke="#eab308" 
+                                    strokeWidth="2" 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round" 
+                                    className="w-4 h-4 flex-shrink-0"
+                                >
+                                    <circle cx="18" cy="18" r="3"></circle>
+                                    <circle cx="6" cy="6" r="3"></circle>
+                                    <path d="M13 6h3a2 2 0 0 1 2 2v7"></path>
+                                    <line x1="6" x2="6" y1="9" y2="21"></line>
+                                </svg>
+                                <div className="min-w-0">
+                                    <p className="text-sm font-medium text-light-text dark:text-dark-text truncate">
+                                        {repoData.openPR} open
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Closed PRs */}
+                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-dark-surface rounded-lg border border-light-border dark:border-dark-border">
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    width="24" 
+                                    height="24" 
+                                    viewBox="0 0 24 24" 
+                                    fill="none" 
+                                    stroke="#dc2626" 
+                                    strokeWidth="2" 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round" 
+                                    className="w-4 h-4 flex-shrink-0"
+                                >
+                                    <circle cx="6" cy="6" r="3"></circle>
+                                    <path d="M6 9v12"></path>
+                                    <path d="m21 3-6 6"></path>
+                                    <path d="m21 9-6-6"></path>
+                                    <path d="M18 11.5V15"></path>
+                                    <circle cx="18" cy="18" r="3"></circle>
+                                </svg>
+                                <div className="min-w-0">
+                                    <p className="text-sm font-medium text-light-text dark:text-dark-text truncate">
+                                        {repoData.closePR} closed
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
-            </div>
-        </main>
+        </div>
     )
 }

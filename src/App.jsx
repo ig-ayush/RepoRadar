@@ -3,13 +3,14 @@ import Home from "./pages/Home"
 import Footer from "./components/Footer"
 
 function App() {
-
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <Home />
+      <div className="flex-1">
+        <Home />
+      </div>
       <Footer />      
-    </>
+    </div>
   )
 }
 

@@ -16,11 +16,13 @@ export default function RepoResult({ repoURL }) {
     const showError = error !== "";
     const showStats = !showNoData && !showError;
 
-    return(
-     <main className="border border-[#1f2937] rounded-lg  h-auto w-1/2 p-8 m-8 flex flex-col justify-center items-center gap-10">
-       {showNoData && <NoData />}
-       {showStats &&  <Statistics repoURL={ repoURL } setError={setError}/>}
-       {showError != "" && <Error error={error}/>}
-     </main>
+    return (
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-xl shadow-sm p-6 lg:p-8">
+                {showNoData && <NoData />}
+                {showStats && <Statistics repoURL={repoURL} setError={setError} />}
+                {showError && <Error error={error} />}
+            </div>
+        </div>
     )
 }

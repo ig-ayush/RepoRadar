@@ -1,22 +1,23 @@
-/* From Uiverse.io by Madflows */ 
+/* Modern Theme Toggle Switch */
 .toggle-switch {
   position: relative;
-  width: 90px;
-  height: 40px;
-  --light: #d8dbe0;
-  --dark: #28292c;
-  --link: rgb(27, 129, 112);
-  --link-hover: rgb(24, 94, 82);
+  width: 60px;
+  height: 32px;
+  --light: #f3f4f6;
+  --dark: #374151;
+  --primary: #0ea5e9;
+  --primary-dark: #0284c7;
 }
 
 .switch-label {
   position: absolute;
   width: 100%;
-  height: 40px;
+  height: 100%;
   background-color: var(--dark);
-  border-radius: 25px;
+  border-radius: 16px;
   cursor: pointer;
-  border: 3px solid var(--dark);
+  border: 2px solid var(--dark);
+  transition: all 0.3s ease;
 }
 
 .checkbox {
@@ -28,9 +29,8 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 25px;
-  -webkit-transition: 0.3s;
-  transition: 0.3s;
+  border-radius: 16px;
+  transition: all 0.3s ease;
 }
 
 .checkbox:checked ~ .slider {
@@ -40,23 +40,39 @@
 .slider::before {
   content: "";
   position: absolute;
-  top: 6px;
-  left: 10px;
-  width: 25px;
-  height: 25px;
+  top: 3px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  -webkit-box-shadow: inset 12px -4px 0px 0px var(--light);
-  box-shadow: inset 12px -4px 0px 0px var(--light);
-  background-color: var(--dark);
-  -webkit-transition: 0.3s;
-  transition: 0.3s;
+  background-color: var(--light);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .checkbox:checked ~ .slider::before {
-  -webkit-transform: translateX(50px);
-  -ms-transform: translateX(50px);
-  transform: translateX(40px);
+  transform: translateX(24px);
+  background-color: var(--primary);
+}
+
+.switch-label:hover {
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+/* Dark theme styles */
+body.dark .switch-label {
   background-color: var(--dark);
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  border-color: var(--dark);
+}
+
+body.dark .checkbox:checked ~ .slider {
+  background-color: var(--primary);
+}
+
+body.dark .slider::before {
+  background-color: var(--light);
+}
+
+body.dark .checkbox:checked ~ .slider::before {
+  background-color: var(--light);
 }

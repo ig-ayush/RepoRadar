@@ -3,27 +3,40 @@ import { useState } from "react";
 export default function RepoInput({ setRepoURL }) {
     const [inputValue, setInputValue] = useState("");
     
-    const submit = (event) =>{
+    const submit = (event) => {
         event.preventDefault();
-        setRepoURL(inputValue)
+        setRepoURL(inputValue);
     }
     
     return (
-        <main className="border border-[#1f2937] rounded-lg  h-auto p-10 m-8">
-            <h1 className="text-lg mb-1">Repository URL or Path</h1>
-            <form className="flex items-center justify-around w-full gap-10" onSubmit={submit}>
-                <div id="repo-name" className="flex flex-col gap-4">
-                    <input type="text" className="border border-[#1f2937] p-4 w-[30vw] bg-[#272e36] rounded-lg text-xl" 
-                    placeholder="github.com/owner/repo"
-                    onChange={(e)=> setInputValue(e.target.value)}
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-white dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-xl shadow-sm p-6 lg:p-8">
+                <h2 className="text-lg sm:text-xl font-display font-semibold text-light-text dark:text-dark-text mb-6">
+                    Repository URL or Path
+                </h2>
+                
+                <form onSubmit={submit} className="space-y-6">
+                    <div className="space-y-2">
+                        <input 
+                            type="text" 
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            placeholder="github.com/owner/repo"
+                            className="w-full px-4 py-3 sm:py-4 text-base sm:text-lg bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border rounded-lg text-light-text dark:text-dark-text placeholder-light-text-secondary dark:placeholder-dark-text-secondary focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+                            required
+                        />
+                    </div>
                     
-                    />
-                </div>
-                <button id="statisticsBtn" type="submit" className="w-max h-fit p-3.5 text-xl font-semibold flex items-center gap-2 rounded-lg group cursor-pointer">
-                    <span>Get Statistics</span>
-                    <i className="fa-solid fa-arrow-right group-hover:translate-x-2 transition-all duration-300"></i>
-                </button>
-            </form>            
-        </main>
+                    <button 
+                        type="submit" 
+                        className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3 sm:py-4 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white font-medium text-base sm:text-lg rounded-lg transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 group"
+                        disabled={!inputValue.trim()}
+                    >
+                        <span>Get Statistics</span>
+                        <i className="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform duration-200"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
     )
 }
